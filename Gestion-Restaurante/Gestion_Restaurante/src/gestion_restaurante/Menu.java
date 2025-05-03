@@ -4,10 +4,7 @@
  */
 package gestion_restaurante;
 
-/**
- *
- * @author HP
- */
+
 public class Menu {
-    
+    private String nombre;
 }
