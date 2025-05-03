@@ -27,4 +27,8 @@ public class Menu {
     public int getPrecio() {
         return precio;
     }
+    
+    public String Mostrar(){
+        return id + ", " + nombre + ", " + precio;
+    }
 }
