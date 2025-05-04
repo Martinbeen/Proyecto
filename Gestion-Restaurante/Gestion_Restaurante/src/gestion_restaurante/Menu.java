@@ -6,29 +6,32 @@ package gestion_restaurante;
 
 
 public class Menu {
-    private int id;
     private String nombre;
-    private int precio;
+    private double precio;
 
-    public Menu(int id, String nombre, int precio) {
-        this.id = id;
+    public Menu(String nombre, double precio) {
         this.nombre = nombre;
         this.precio = precio;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public int getPrecio() {
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public double getPrecio() {
         return precio;
     }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
     
-    public String Mostrar(){
-        return id + ", " + nombre + ", " + precio;
+    @Override
+    public String toString(){
+        return nombre + ", Precio = " + precio + "\n";
     }
 }
