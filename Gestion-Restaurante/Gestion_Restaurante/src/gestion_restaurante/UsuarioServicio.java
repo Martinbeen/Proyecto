@@ -8,10 +8,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-/**
- *
- * @author HP
- */
 public class UsuarioServicio {
     private UsuarioFilaRepositorio usuarioRepo;
     private List<Usuario> usuarios;
