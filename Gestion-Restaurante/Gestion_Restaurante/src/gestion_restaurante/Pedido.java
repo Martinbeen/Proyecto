@@ -5,54 +5,76 @@
 package gestion_restaurante;
 
 import java.awt.Component;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
+public class Pedido {
+    private int id;
+    private List<MenuItem> items;
+    private LocalDateTime fechaHora;
+    
+    public Pedido(){
+        this.items = new ArrayList<>();
+        this.fechaHora = LocalDateTime.now();
+    }
 
-public class Pedidos {
-    private List<Menu> menus = new ArrayList<>();
+    public Pedido(int id) {
+        this();
+        this.id = id;
+    }
+
+    public Pedido(int id, List<MenuItem> items) {
+        this(id);
+        this.items = new ArrayList<>(items);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<MenuItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<MenuItem> items) {
+        this.items = items;
+    }
+    
+    public LocalDateTime getFechaHora(){
+        return fechaHora;
+    }
+    
+    public void setFechaHora(LocalDateTime fechaHora){
+        this.fechaHora = fechaHora;
+    }
     
     // agregar un menu al pedido
-    public void addMenu(Menu menu){
-        menus.add(menu);
+    public void agregarItem(MenuItem item){
+        items.add(item);
     }
     // Eliminar un menu del pedido
-    public boolean removeMenu(Menu menu){
-        return menus.remove(menu);
+    public boolean eliminarItem(MenuItem item){
+        return items.remove(item);
     }
     // retorna el total sin impuesto
     public double getSubtotal(){
-        return menus.stream()
-                .mapToDouble(Menu::getPrecio)
+        return items.stream()
+                .mapToDouble(MenuItem::getPrecio)
                 .sum();
     }
-    // Buscar Menu
-    public Menu buscarMenu(String nombre){
-        if(menus == null){
-            return null;
-        }
-        else{
-            for(Menu menu: menus){
-                if(menu.getNombre().equals(nombre)){
-                    return menu;
-                }
-            }
-            return null;
-        }
-    }
-    public void mostrarInventario(){
-        if(this.menus.isEmpty()){
-            JOptionPane.showMessageDialog((Component)null, "Pedidos vacio");
-            return;
-        }
-        else {
-            StringBuilder mensaje = new StringBuilder();
-            mensaje.append("Pedidos: \n");
-            for(Menu menu: menus){
-                mensaje.append(menu.toString());
-            }
-            JOptionPane.showMessageDialog((Component)null, mensaje.toString());
-        }
+    @Override
+    public String toString(){
+        return "Pedido{" +
+                "id= " + id +
+                ", items= " + items +
+                ", fechaHora= " + fechaHora +
+                ", subtotal= " + getSubtotal() +
+                '}';
     }
 }

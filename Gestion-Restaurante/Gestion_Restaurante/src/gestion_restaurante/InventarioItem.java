@@ -5,21 +5,23 @@
 package gestion_restaurante;
 
 
-public class Inventario {
-    private Menu menu;
+public class InventarioItem {
+    private MenuItem item;
     private int stock;
-
-    public Inventario(Menu menu, int stock) {
-        this.menu = menu;
+    
+    public InventarioItem(){}
+    
+    public InventarioItem(MenuItem menu, int stock) {
+        this.item = menu;
         this.stock = stock;
     }
-
-    public Menu getMenu() {
-        return menu;
+    
+    public MenuItem getItem() {
+        return item;
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
+    public void setItem(MenuItem item) {
+        this.item = item;
     }
 
     public int getStock() {
@@ -27,20 +29,27 @@ public class Inventario {
     }
     
     // incrementa el stock en la cantidad dada
-    public void addStock(int cantidad) {
-        if(cantidad >= 0){
+    public void incrementarStock(int cantidad) {
+        if(cantidad > 0){
             this.stock += cantidad;
         }
     }
     // redue el stock si hay suficiente
     public void reducirStock(int cantidad){
-        if(cantidad <= stock){
-            this.stock -= cantidad;
+        if(cantidad <= 0){
+            throw new IllegalArgumentException("Cantidad debe ser positiva");
         }
+        if(cantidad > stock){
+            throw new IllegalArgumentException("Stock insuficiente para el item: " + item.getNombre());
+        }
+        this.stock -= cantidad;
     }
     
     @Override
     public String toString(){
-        return "Nombre = " + menu + ", stock = " + stock;
+        return "InventarioItem{" +
+                "item= " + item +
+                ", stock= " + stock +
+                '}';
     }
 }

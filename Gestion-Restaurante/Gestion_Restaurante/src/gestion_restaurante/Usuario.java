@@ -4,28 +4,30 @@
  */
 package gestion_restaurante;
 
-
-public class MenuItem {
+/**
+ *
+ * @author HP
+ */
+public class Usuario {
     private int id;
     private String nombre;
-    private double precio;
+    private String rol;
     
-    public MenuItem(){}
-
-    public MenuItem(int id, String nombre, double precio) {
+    public Usuario(){}
+    public Usuario(int id, String nombre, String rol) {
         this.id = id;
         this.nombre = nombre;
-        this.precio = precio;
+        this.rol = rol;
     }
-    
-    public int getId(){
+
+    public int getId() {
         return id;
     }
-    
-    public void setId(int id){
+
+    public void setId(int id) {
         this.id = id;
     }
-    
+
     public String getNombre() {
         return nombre;
     }
@@ -34,20 +36,19 @@ public class MenuItem {
         this.nombre = nombre;
     }
 
-    public double getPrecio() {
-        return precio;
+    public String getRol() {
+        return rol;
     }
 
-    public void setPrecio(double precio) {
-        this.precio = precio;
+    public void setRol(String rol) {
+        this.rol = rol;
     }
-    
     @Override
     public String toString(){
-        return "MenuItem{"+
+        return "Usuario{"+
                 "id=" + id + 
                 ", nombre='" + nombre + '\'' +
-                ", precio='" + precio +
+                ", rol='" + rol + '\'' +
                 '}';
     }
 }
