@@ -1,5 +1,17 @@
 [ {
   "id" : 1,
-  "nombre" : "Chaufa",
-  "precio" : 10.0
+  "nombre" : "Arroz Chaufa",
+  "precio" : 5.5
+}, {
+  "id" : 2,
+  "nombre" : "Picarones",
+  "precio" : 2.2
+}, {
+  "id" : 3,
+  "nombre" : "Ceviche Mixto",
+  "precio" : 15.0
+}, {
+  "id" : 4,
+  "nombre" : "Chaunfainita",
+  "precio" : 17.6
 } ]

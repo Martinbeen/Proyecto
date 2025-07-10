@@ -14,33 +14,58 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioFilaRepositorio {
-    private static final Path PATH = Paths.get("data/usuarios.csv");
-    
-    // cargar todos los usuarios desde data/Usuarios.csv
-    public List<Usuario> cargarTodo() throws IOException{
-        List<Usuario> list = new ArrayList<>();
-        if(!Files.exists(PATH)) return list;
-        try (BufferedReader br = Files.newBufferedReader(PATH)){
-            String line;
-            while((line = br.readLine()) != null){
-                String[] cols = line.split(";");
-                int id = Integer.parseInt(cols[0]);
-                String nombre = cols[1];
-                String rol = cols[2];
-                list.add(new Usuario(id, nombre, rol));
+    private static final Path PATH = Paths.get("data/users.csv");
+
+    /** Carga todos los usuarios desde data/users.csv, saltando el encabezado. */
+    public List<Usuario> cargarTodo() throws IOException {
+        List<Usuario> lista = new ArrayList<>();
+
+        if (!Files.exists(PATH)) {
+            Files.createDirectories(PATH.getParent());
+            Files.createFile(PATH);
+            return lista;
+        }
+
+        try (BufferedReader br = Files.newBufferedReader(PATH)) {
+            String linea;
+            boolean esPrimera = true;
+            while ((linea = br.readLine()) != null) {
+                linea = linea.trim();
+                // Saltar encabezado
+                if (esPrimera) {
+                    esPrimera = false;
+                    continue;
+                }
+                if (linea.isEmpty() || linea.startsWith("#")) continue;
+
+                String[] cols = linea.split(";");
+                if (cols.length < 3) continue;
+
+                try {
+                    int id = Integer.parseInt(cols[0].trim());
+                    String nombre = cols[1].trim();
+                    String rol    = cols[2].trim();
+                    lista.add(new Usuario(id, nombre, rol));
+                } catch (NumberFormatException ex) {
+                    System.err.println("Entrada inválida en users.csv: " + linea);
+                }
             }
         }
-        return list;
-    } 
-    // guardar todos los usuarios en data/Usuarios.csv
-    public void guardarTodo(List<Usuario> usuarios) throws IOException{
+
+        return lista;
+    }
+
+    /** Guarda todos los usuarios en data/users.csv, incluyendo encabezado. */
+    public void guardarTodo(List<Usuario> usuarios) throws IOException {
         Files.createDirectories(PATH.getParent());
-        try (BufferedWriter bw = Files.newBufferedWriter(PATH)){
-            for (Usuario u: usuarios){
+        try (BufferedWriter bw = Files.newBufferedWriter(PATH)) {
+            // Encabezado
+            bw.write("ID;NOMBRE;ROL");
+            bw.newLine();
+            for (Usuario u : usuarios) {
                 bw.write(u.getId() + ";" + u.getNombre() + ";" + u.getRol());
                 bw.newLine();
             }
         }
     }
-    
 }

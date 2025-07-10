@@ -14,6 +14,7 @@ public class Pedido {
     private int id;
     private List<MenuItem> items;
     private LocalDateTime fechaHora;
+    private double descuentoPct; 
     
     public Pedido(){
         this.items = new ArrayList<>();
@@ -23,6 +24,7 @@ public class Pedido {
     public Pedido(int id) {
         this();
         this.id = id;
+        this.descuentoPct = 0.0;
     }
 
     public Pedido(int id, List<MenuItem> items) {
@@ -62,19 +64,16 @@ public class Pedido {
     public boolean eliminarItem(MenuItem item){
         return items.remove(item);
     }
-    // retorna el total sin impuesto
-    public double getSubtotal(){
-        return items.stream()
-                .mapToDouble(MenuItem::getPrecio)
-                .sum();
+    public double getDescuentoPct() { return descuentoPct; }
+    public void setDescuentoPct(double pct) { this.descuentoPct = pct; }
+
+    // retorna el total sin impuesto y con descuento
+    public double getSubtotal() {
+        double suma = items.stream().mapToDouble(MenuItem::getPrecio).sum();
+        return suma * (1 - descuentoPct / 100);
     }
     @Override
     public String toString(){
-        return "Pedido{" +
-                "id= " + id +
-                ", items= " + items +
-                ", fechaHora= " + fechaHora +
-                ", subtotal= " + getSubtotal() +
-                '}';
+        return "id = " + id + ", items = " + items + ", fechaHora = " + fechaHora + ", subtotal= " + getSubtotal();
     }
 }

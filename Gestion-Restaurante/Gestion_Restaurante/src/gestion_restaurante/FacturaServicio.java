@@ -14,6 +14,11 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 /**
  *
  * @author HP
@@ -69,5 +74,9 @@ public class FacturaServicio {
         document.add(new Paragraph(String.format("Total: $/ %.2f", total)));
         document.close();
     }
-
+    public void registrarFacturacion(String pdfRuta) throws IOException {
+        Path destino = Paths.get("facturacion", new File(pdfRuta).getName());
+        Files.createDirectories(destino.getParent());
+        Files.copy(Paths.get(pdfRuta), destino, StandardCopyOption.REPLACE_EXISTING);
+    }
 }

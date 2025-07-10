@@ -7,6 +7,7 @@ package gestion_restaurante;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -62,4 +63,11 @@ public class MenuServicio {
                 .findFirst()
                 .orElse(null);
     }
+    /** Busca platillos cuyo nombre contenga el texto dado (case‑insensitive) */
+    public List<MenuItem> buscarPorNombre(String texto) {
+        String lower = texto.toLowerCase();
+        return menuItems.stream()
+            .filter(m -> m.getNombre().toLowerCase().contains(lower))
+            .collect(Collectors.toList());
+}
 }

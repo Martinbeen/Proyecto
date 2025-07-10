@@ -16,69 +16,64 @@ public class PedidoServicio {
     private List<Pedido> pedidos;
     private PedidoFilaRepositorio pedidoRepo;
     private InventarioServicio inventarioServicio;
-    
-    public PedidoServicio(InventarioServicio invServicio){
+
+    public PedidoServicio(InventarioServicio invServicio) {
         this.inventarioServicio = invServicio;
         this.pedidoRepo = new PedidoFilaRepositorio();
-        try{
+        try {
             this.pedidos = pedidoRepo.cargarTodo();
-        } catch(IOException e){
+        } catch (IOException e) {
             this.pedidos = new java.util.ArrayList<>();
         }
     }
-    // crea un nuevo pedido con lista de Ids de platillos
-    // descarga stock y persiste el pedido
-    public Pedido crearPedido(int id, List<MenuItem> items) throws IOException{
-        Optional<Pedido> existe = pedidos.stream().filter(p -> p.getId() == id).findFirst();
-        if(existe.isPresent()){
+
+    public Pedido crearPedido(int id, List<MenuItem> items) throws IOException {
+        if (pedidos.stream().anyMatch(p -> p.getId() == id))
             throw new IllegalArgumentException("Ya existe un pedido con Id " + id);
-        }
-        // validar stock para cada item
-        for(MenuItem item : items){
-            int stockActual = inventarioServicio.getStock(item.getId());
-            if(stockActual <= 0){
+        // validar y reducir stock
+        for (MenuItem item : items) {
+            if (inventarioServicio.getStock(item.getId()) <= 0)
                 throw new InsuficienteStockException("Stock insuficiente para platillo: " + item.getNombre());
-            }
         }
-        // reducir stock
-        for(MenuItem item : items){
+        for (MenuItem item : items) {
             inventarioServicio.reducirStock(item.getId(), 1);
         }
-        // crear y guardar
         Pedido p = new Pedido(id, items);
         pedidos.add(p);
-        pedidoRepo.guardarTodo(pedidos);
-        //actualizar inventario fisico
-        inventarioServicio.persistirInventario();
+        guardarPedidos();  // persiste pedido e inventario
         return p;
     }
-    // lista todos los pedidos
-    public List<Pedido> listarPedidos(){
+
+    public List<Pedido> listarPedidos() {
         return new java.util.ArrayList<>(pedidos);
     }
-    // busca un pedido por id
-    public Pedido buscarPedido(int id){
-        return pedidos.stream()
-                .filter(p -> p.getId() == id)
-                .findFirst()
-                .orElse(null);
+
+    public Pedido buscarPedido(int id) {
+        return pedidos.stream().filter(p -> p.getId() == id).findFirst().orElse(null);
     }
-    // Elimina un pedido
-    public boolean cancelarPedido(int id) throws IOException{
-        Optional<Pedido> opt = pedidos.stream()
-                .filter(p -> p.getId() == id)
-                .findFirst();
-        if(opt.isPresent()){
+
+    public boolean cancelarPedido(int id) throws IOException {
+        Optional<Pedido> opt = pedidos.stream().filter(p -> p.getId() == id).findFirst();
+        if (opt.isPresent()) {
             Pedido p = opt.get();
-            //devolver stock
-            for(MenuItem item : p.getItems()){
+            for (MenuItem item : p.getItems()) {
                 inventarioServicio.incrementarStock(item.getId(), 1);
             }
             pedidos.remove(p);
-            pedidoRepo.guardarTodo(pedidos);
-            inventarioServicio.persistirInventario();
+            guardarPedidos();
             return true;
         }
         return false;
+    }
+
+    public double aplicarDescuento(Pedido pedido, double porcentaje) {
+        pedido.setDescuentoPct(porcentaje);
+        return pedido.getSubtotal();
+    }
+
+    /** Persiste pedidos e inventario juntos */
+    public void guardarPedidos() throws IOException {
+        pedidoRepo.guardarTodo(pedidos);
+        inventarioServicio.persistirInventario();
     }
 }
